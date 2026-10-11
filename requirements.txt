@@ -1,0 +1,6 @@
+strands-agents>=1.0
+opensearch-py>=2.4
+requests>=2.31
+aws-lambda-powertools>=2.30
+aws-xray-sdk>=2.12
+boto3>=1.34

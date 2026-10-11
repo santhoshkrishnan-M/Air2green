@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.env/
+
+# AWS / SAM
+.aws-sam/
+.aws/
+samconfig.toml
+
+# Local data / caches
+data/store.json
+*.log
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+
+# Environment / secrets (never commit)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*secret*
+*credential*
+*password*
+*token*
+*api*key*

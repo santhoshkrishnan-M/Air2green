@@ -1,0 +1,120 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: AIR2GREEN - live bad-air response for every country, and where to plant trees
+
+Parameters:
+  OpenSearchUrl:
+    Type: String
+    Default: ""
+    Description: OpenSearch endpoint (Amazon OpenSearch Service domain or self-hosted). Blank = no history store.
+  OpenSearchUser:
+    Type: String
+    Default: ""
+  OpenSearchPassword:
+    Type: String
+    Default: ""
+    NoEcho: true
+  AlertEmail:
+    Type: String
+    Description: Email that receives bad-air alerts (confirm the SNS subscription email)
+  AlertCities:
+    Type: String
+    Default: "Chennai,IN;Delhi,IN"
+    Description: Cities the hourly monitor alerts on, "City,CC;City,CC"
+  ModelId:
+    Type: String
+    Default: ""
+    Description: Bedrock model id for the Strands agent (blank = Strands default)
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Timeout: 120
+    MemorySize: 1024
+    Tracing: Active
+    Environment:
+      Variables:
+        OPENSEARCH_URL: !Ref OpenSearchUrl
+        OPENSEARCH_USER: !Ref OpenSearchUser
+        OPENSEARCH_PASSWORD: !Ref OpenSearchPassword
+        A2G_ALERT_CITIES: !Ref AlertCities
+        A2G_MODEL_ID: !Ref ModelId
+        A2G_LOCAL_STORE: /tmp/store.json
+        POWERTOOLS_SERVICE_NAME: air2green
+
+Resources:
+  AlertTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: air2green-alerts
+      Subscription:
+        - Protocol: email
+          Endpoint: !Ref AlertEmail
+
+  MonitorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lambdas.handlers.monitor_handler
+      Timeout: 600
+      Environment:
+        Variables:
+          SNS_TOPIC_ARN: !Ref AlertTopic
+      Policies:
+        - SNSPublishMessagePolicy:
+            TopicName: !GetAtt AlertTopic.TopicName
+      Events:
+        Hourly:
+          Type: ScheduleV2          # EventBridge Scheduler
+          Properties:
+            ScheduleExpression: rate(1 hour)
+            Description: World snapshot + bad-air alerts and all-clears for the alert cities
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Handler: lambdas.handlers.api_handler
+      Timeout: 120
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: [bedrock:InvokeModel, bedrock:InvokeModelWithResponseStream]
+              Resource: "*"
+      Events:
+        World:  { Type: Api, Properties: { Path: /world,  Method: get } }
+        City:   { Type: Api, Properties: { Path: /city,   Method: get } }
+        Events: { Type: Api, Properties: { Path: /events, Method: get } }
+        Plan:   { Type: Api, Properties: { Path: /plan,   Method: get } }
+
+  # Static hosting for web/ (upload with: aws s3 sync web/ s3://<WebBucket>)
+  WebBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: index.html
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        IgnorePublicAcls: true
+        BlockPublicPolicy: false
+        RestrictPublicBuckets: false
+  WebBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref WebBucket
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action: s3:GetObject
+            Resource: !Sub "${WebBucket.Arn}/*"
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  WebsiteUrl:
+    Value: !GetAtt WebBucket.WebsiteURL
+  WebBucketName:
+    Value: !Ref WebBucket
+  AlertTopicArn:
+    Value: !Ref AlertTopic

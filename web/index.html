@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>AIR2GREEN</title>
+<meta name="description" content="Live air quality for every country, with what to do on bad-air days and where to plant trees.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#world" aria-label="AIR2GREEN home"><span>AIR</span><b>2</b><span>GREEN</span></a>
+    <div class="search" role="search">
+      <label for="q" class="sr">Search a country or city</label>
+      <input id="q" type="search" placeholder="Search any country or city" autocomplete="off" spellcheck="false" aria-controls="qres" aria-expanded="false">
+      <div id="qres" class="qres" role="listbox" hidden></div>
+    </div>
+    <button type="button" class="btn ghost" id="locBtn" title="Show the air where you are">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="currentColor"/><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 0v3M8 13v3M0 8h3M13 8h3" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>My location</span>
+    </button>
+    <div class="live" id="live" aria-live="polite"><i></i><span>Connecting…</span></div>
+    <label class="scale"><span class="sr">Air quality scale</span>
+      <select id="scale" title="Air quality scale">
+        <option value="auto">Scale: local</option>
+        <option value="epa">Scale: US EPA</option>
+        <option value="cpcb">Scale: India CPCB</option>
+      </select>
+    </label>
+  </div>
+</div>
+
+<main class="wrap">
+  <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+  <div class="banner" id="banner" hidden></div>
+  <div id="view"></div>
+  <footer class="foot" id="foot">
+    <p><b>Data, live:</b> PM2.5, PM10, dust and carbon monoxide from the Copernicus Atmosphere Monitoring Service (CAMS) through the free <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> air-quality API; wind and mixing height from Open-Meteo weather forecasts; schools, hospitals, roads and parks from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors via the Overpass API. Country shapes: Natural Earth. Places: GeoNames.</p>
+    <p>CAMS values are model estimates for a ~10–45 km grid cell, refreshed through the day, not readings from a single monitor; a street next to heavy traffic can be worse. Air quality bands are defined for 24-hour averages and are applied here to hourly values as a guide. Exposure and tree figures are estimates with their assumptions shown. This is not medical advice.</p>
+  </footer>
+</main>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script src="vendor/d3.min.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script src="geo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
