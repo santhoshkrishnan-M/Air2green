@@ -120,12 +120,4 @@ Tests replace the network with synthetic responses shaped like Open-Meteo and Ov
 `scripts/build_places.py` and `scripts/simplify.js` regenerate `web/geo.js` and
 `air2green/data/places.json` from world-atlas and GeoNames (instructions in the script).
 
-## 3-minute demo script
-
-1. **0:00 Problem** – open the World view: live colours, "N capitals above WHO; M getting worse in 24 h".
-2. **0:25 Drill down** – click the worst country, then its worst city.
-3. **0:50 Detect** – status card and 3-day chart: "Alert coming tomorrow 06:00–11:00".
-4. **1:15 Explain** – likely cause from wind/mixing height/CO; schools and hospitals next to major roads on the map.
-5. **1:45 Act + Measure** – actions per audience; tick schools; person-hours and % exposure saved.
-6. **2:10 Plant** – top 5 sites, barrier layout, tree-equivalent with live mixing height.
-7. **2:35 AWS** – SNS alert email from the hourly monitor, the Strands agent's tool calls, OpenSearch snapshots.
+ tool calls, OpenSearch snapshots.
