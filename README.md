@@ -25,7 +25,6 @@ actions save, and where tree planting would protect the most people over the lon
 - [The Strands agent](#the-strands-agent)
 - [How the numbers are calculated](#how-the-numbers-are-calculated)
 - [Testing](#testing)
-- [Demo script (3 minutes)](#demo-script-3-minutes)
 - [Limitations and roadmap](#limitations-and-roadmap)
 - [Credits and licences](#credits-and-licences)
 
@@ -352,18 +351,6 @@ python tests/browser_check.py       # headless browser: world, country and city 
 
 Tests replace the network with synthetic responses shaped like Open-Meteo and Overpass
 (`tests/fakeapi.py`). That file is used only by the tests; the app and backend never fall back to it.
-
-## Demo script (3 minutes)
-
-| Time | Show |
-|---|---|
-| 0:00 | **Problem.** The World view, live: "N capitals above WHO, M getting worse in 24 h." |
-| 0:25 | **Drill down.** Click the worst country, then its worst city. |
-| 0:50 | **Detect.** Status card and 3-day chart: "Alert coming tomorrow 06:00–11:00." |
-| 1:15 | **Explain.** Likely cause from wind, mixing height and CO; schools and hospitals next to major roads on the map. |
-| 1:45 | **Act and Measure.** Actions per audience; tick schools as done; person-hours and % exposure saved. |
-| 2:10 | **Plant.** Top 5 sites, barrier layout, tree-equivalent with live mixing height. |
-| 2:35 | **AWS.** The SNS alert email from the hourly monitor, the Strands agent's tool calls, OpenSearch snapshots. |
 
 ## Limitations and roadmap
 
